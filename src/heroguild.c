@@ -1,8 +1,19 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #define SCREEN_HEIGHT 600
 #define SCREEN_WIDTH 800
+
+void render_screen(SDL_Renderer *renderer, SDL_Texture *screen)
+{
+    uint32_t *pixels = calloc(SCREEN_WIDTH * SCREEN_HEIGHT, sizeof(uint32_t));
+
+    SDL_UpdateTexture(screen, NULL, pixels, SCREEN_WIDTH * sizeof(uint32_t));
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, screen, NULL, NULL);
+    SDL_RenderPresent(renderer);
+}
 
 int main(void)
 {
@@ -12,24 +23,22 @@ int main(void)
         "Hero Guild",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
+        SCREEN_WIDTH, SCREEN_HEIGHT,
         0);
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
     if (!window) {
-        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        printf("Unable to create window. SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
 
-    SDL_Surface *surface = SDL_LoadBMP("img/smiley.bmp");
-    if (!surface) {
-		printf("Unable to load bitmap: %s\n", SDL_GetError());
-		return 1;
-	};
-
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SDL_Texture *screen = SDL_CreateTexture(
+        renderer, 
+        SDL_PIXELFORMAT_ABGR8888, 
+        SDL_TEXTUREACCESS_STREAMING, 
+        SCREEN_WIDTH, SCREEN_HEIGHT);
 
     for(;;) {
         SDL_Event event;
@@ -39,12 +48,10 @@ int main(void)
             }
         }
 
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
-        SDL_RenderPresent(renderer);
+        render_screen(renderer, screen);
     }
 
-    SDL_DestroyTexture(texture);
+    SDL_DestroyTexture(screen);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 

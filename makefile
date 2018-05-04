@@ -1,4 +1,4 @@
-TARGET = prog.out
+TARGET = hero.out
 LIBS = -lm -lSDL2main -lSDL2
 CC = gcc
 CFLAGS = -g -Wall
