@@ -2,10 +2,14 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "pt_console.c"
+#include "../lib/pt_console.c"
 
-#define SCREEN_HEIGHT 600
-#define SCREEN_WIDTH 800
+#define SCREEN_WIDTH    800
+#define SCREEN_HEIGHT   608
+
+#define NUM_COLS        50
+#define NUM_ROWS        38
+
 
 void render_screen(SDL_Renderer *renderer, SDL_Texture *screen)
 {
@@ -41,6 +45,10 @@ int main(void)
         SDL_PIXELFORMAT_ABGR8888, 
         SDL_TEXTUREACCESS_STREAMING, 
         SCREEN_WIDTH, SCREEN_HEIGHT);
+
+
+
+
 
     for(;;) {
         SDL_Event event;
