@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include "pt_console.c"
+
 #define SCREEN_HEIGHT 600
 #define SCREEN_WIDTH 800
 
@@ -47,7 +49,6 @@ int main(void)
                 break;
             }
         }
-
         render_screen(renderer, screen);
     }
 
